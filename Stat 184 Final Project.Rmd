@@ -51,14 +51,14 @@ library(lubridate)
 
 ### Reading in the Data
 
+I downloaded the data set from the Chicago Data Portal as a CSV file and used read_csv() from the readr package to create a data set named ChicagoCrime that I can work with in R
+
 ```{r, results = "hide"}
 
 ChicagoCrimeOriginal <-
 read_csv("Crimes_-_2001_to_present.csv")
 
-# I downloaded the data set from the Chicago Data Portal as a CSV file and used read_csv() from the readr package to create a data set named ChicagoCrime that I can work with in R
-
-```
+``` 
 
 ```{r}
 
@@ -68,27 +68,19 @@ ChicagoCrimeOriginal
 
 ### Cleaning the Data
 
+In order to clean up the data to make it tidy and ready for analysis, I renamed the variables to fit standard data conventions in R programming, selected the variables that will be meaningful for data analysis, changed variable formats to fit what they contain (ex. dates, logical values, etc.), and removed the X or XX included in addresses under the block variable/
+
 ```{r}
 
 ChicagoCrime <-
 ChicagoCrimeOriginal %>%
   rename(id = ID, casenumber = `Case Number`, date = Date, block = Block, iucr = IUCR, primarytype = `Primary Type`, description = Description, locationdescription = `Location Description`, arrest = Arrest, domestic = Domestic, beat = Beat, district = District, ward = Ward, communityarea = `Community Area`, fbicode = `FBI Code`, xcoordinate = `X Coordinate`, ycoordinate = `Y Coordinate`, year = Year, updated = `Updated On`, lat = Latitude, long = Longitude, location = Location) %>%
-  
-  # Renaming the variables to fit standard data conventions in R programming
-  
   select(date, block, iucr, primarytype, description, locationdescription, arrest, domestic, beat, district, ward, communityarea, fbicode, year, lat, long, location) %>%
-  
-  # Selecting the variables that will be meaningful to data analysis
-  
   mutate(date = lubridate::mdy_hms(date), arrest = as.logical(arrest), domestic = as.logical(domestic), beat = as.numeric(beat), district = as.numeric(district)) 
 
-# Changing variable formats to fit what they contain (ex. dates, logical values, etc.)
- 
 ChicagoCrime <-
 ChicagoCrime %>% 
   mutate(block = gsub("X|XX","", block))
-
-# Removing the X or XX from the data saved for each block, as it is irrelevant to the actual address
 
 ChicagoCrime 
   

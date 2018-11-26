@@ -45,6 +45,7 @@ library(mosaic)
 library(lubridate)
 library(DataComputing)
 library(readr)
+library(lubridate)
 
 ```
 
@@ -52,7 +53,7 @@ library(readr)
 
 ```{r, results = "hide"}
 
-ChicagoCrime <-
+ChicagoCrimeOriginal <-
 read_csv("Crimes_-_2001_to_present.csv")
 
 # I downloaded the data set from the Chicago Data Portal as a CSV file and used read_csv() from the readr package to create a data set named ChicagoCrime that I can work with in R
@@ -61,6 +62,27 @@ read_csv("Crimes_-_2001_to_present.csv")
 
 ```{r}
 
-ChicagoCrime
+ChicagoCrimeOriginal
 
 ```
+
+### Cleaning the Data
+
+```{r}
+
+ChicagoCrime <-
+ChicagoCrimeOriginal %>%
+  rename(id = ID, casenumber = `Case Number`, date = Date, block = Block, iucr = IUCR, primarytype = `Primary Type`, description = Description, locationdescription = `Location Description`, arrest = Arrest, domestic = Domestic, beat = Beat, district = District, ward = Ward, communityarea = `Community Area`, fbicode = `FBI Code`, xcoordinate = `X Coordinate`, ycoordinate = `Y Coordinate`, year = Year, updated = `Updated On`, lat = Latitude, long = Longitude, location = Location) %>%
+  select(date, block, iucr, primarytype, description, locationdescription, arrest, domestic, beat, district, ward, communityarea, fbicode, year, lat, long, location) %>%
+  mutate(date = lubridate::mdy_hms(date), arrest = as.logical(arrest), domestic = as.logical(domestic), beat = as.numeric(beat), district = as.numeric(district)) 
+ 
+ChicagoCrime <-
+ChicagoCrime %>% 
+  mutate(block = gsub("X|XX","", block))
+
+ChicagoCrime 
+  
+```
+
+
+

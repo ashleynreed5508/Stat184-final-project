@@ -1,7 +1,7 @@
 ---
 title: "Stat 184 Final Project"
-subtitle: "Chicago Crime: 2001 to Present"
 author: "Ashley Reed"
+subtitle: "Chicago Crime: 2001 to Present"
 output: html_notebook
 ---
 
@@ -36,7 +36,6 @@ The variables include:
 ### Front Matter
 
 ```{r}
-
 rm(list = ls())
 
 library(rvest)
@@ -51,18 +50,17 @@ library(readr)
 
 ### Reading in the Data
 
-```{r}
+```{r, results = "hide"}
 
 ChicagoCrime <-
 read_csv("Crimes_-_2001_to_present.csv")
 
 # I downloaded the data set from the Chicago Data Portal as a CSV file and used read_csv() from the readr package to create a data set named ChicagoCrime that I can work with in R
 
+```
+
+```{r}
+
 ChicagoCrime
 
 ```
-
-
-
-
-

@@ -1,0 +1,21 @@
+---
+title: "Stat 184 Final Project"
+subtitle: "Chicago Crime: 2001 to Present"
+author: "Ashley Reed"
+output: html_notebook
+---
+
+## Front Matter
+
+```{r}
+
+rm(list = ls())
+
+library(rvest)
+library(tidyverse)
+library(tidyr)
+library(mosaic)
+library(lubridate)
+library(DataComputing)
+
+```

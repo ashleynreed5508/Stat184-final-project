@@ -5,7 +5,35 @@ author: "Ashley Reed"
 output: html_notebook
 ---
 
-## Front Matter
+In this project, I will be analyzing data collected by the Chicago Police Department that was posted for public access on the Chicago Data Portal. This data set contained 6.75 million cases providing information on 22 different variables. Each case represents a reported crime. 
+
+The variables include:
+
+* ID (Unique ID numbers for each reported crime)
+* Case number (Unique combinations of numbers and letters used by the Chicago Police Department to identify cases)
+* Date
+* Block
+* IUCR (Illinois Uniform Crime Reporting code)
+* Primary Type (general description of IUCR code)
+* Description (detailed description of IUCR code)
+* Location Description
+* Arrest (true or false)
+* Domestic (true of false)
+* Beat
+* District
+* Ward
+* Community Area
+* FBI Code
+* X-coordinate (location)
+* Y-coordinate (location)
+* Year
+* Updated On (date of last update)
+* Latitude
+* Longitude 
+* Location
+
+
+### Front Matter
 
 ```{r}
 
@@ -17,5 +45,24 @@ library(tidyr)
 library(mosaic)
 library(lubridate)
 library(DataComputing)
+library(readr)
 
 ```
+
+### Reading in the Data
+
+```{r}
+
+ChicagoCrime <-
+read_csv("Crimes_-_2001_to_present.csv")
+
+# I downloaded the data set from the Chicago Data Portal as a CSV file and used read_csv() from the readr package to create a data set named ChicagoCrime that I can work with in R
+
+ChicagoCrime
+
+```
+
+
+
+
+

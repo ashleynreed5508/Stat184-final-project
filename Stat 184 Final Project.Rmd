@@ -68,7 +68,7 @@ ChicagoCrimeOriginal
 
 ### Cleaning the Data
 
-In order to clean up the data to make it tidy and ready for analysis, I renamed the variables to fit standard data conventions in R programming, selected the variables that will be meaningful for data analysis, changed variable formats to fit what they contain (ex. dates, logical values, etc.), and removed the X or XX included in addresses under the block variable/
+In order to clean up the data to make it tidy and ready for analysis, I renamed the variables to fit standard data conventions in R programming, selected the variables that will be meaningful for data analysis, changed variable formats to fit what they contain (ex. dates, logical values, etc.), and removed the X or XX included in addresses under the block variable.
 
 ```{r}
 
@@ -85,6 +85,34 @@ ChicagoCrime %>%
 ChicagoCrime 
   
 ```
+
+Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about certain districts in Chicago and their relative danger in terms of crimes committed. First, I will manipulate the data to figure out which 5 districts have had the largest number of assaults with and without arrests.
+
+In order to do this, I will select the variables `district`, `arrest`, and `primarytype`, and group by all three of them to make each combination of the variables a unique case. Then, I will summarise the data to find the number of incidences for each case.  To isolate assaults with arrest, I will filter out all `primarytype` results that are not assault, and filter out all `arrest` results that are not TRUE. I will do the opposite for arrest to find the assaults without arrest. Then, I will arrange each new data frame by descending count to find the highest values and restrict them to the top 5 results.
+
+```{r}
+
+ChicagoCrime %>%
+  select(district, arrest, primarytype) %>%
+  group_by(district, primarytype, arrest) %>%
+  summarise(count = n()) %>%
+  filter(primarytype == "ASSAULT", arrest == "TRUE") %>%
+  arrange(desc(count)) %>%
+  head(5)
+
+ChicagoCrime %>%
+  select(district, arrest, primarytype) %>%
+  group_by(district, primarytype, arrest) %>%
+  summarise(count = n()) %>%
+  filter(primarytype == "ASSAULT", arrest == "FALSE") %>%
+  arrange(desc(count)) %>%
+  head(5)
+
+```
+
+
+
+
 
 
 

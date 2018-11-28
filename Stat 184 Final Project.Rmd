@@ -82,8 +82,9 @@ ChicagoCrime <-
 ChicagoCrime %>% 
   mutate(block = gsub("X|XX","", block))
 
+
 ChicagoCrime 
-  
+
 ```
 
 Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about certain districts in Chicago and their relative danger in terms of crimes committed. First, I will manipulate the data to figure out which 5 districts have had the largest number of assaults with and without arrests.
@@ -92,24 +93,35 @@ In order to do this, I will select the variables `district`, `arrest`, and `prim
 
 ```{r}
 
+ChicagoCrimeAssault <-
 ChicagoCrime %>%
   select(district, arrest, primarytype) %>%
   group_by(district, primarytype, arrest) %>%
   summarise(count = n()) %>%
-  filter(primarytype == "ASSAULT", arrest == "TRUE") %>%
+  filter(primarytype == "ASSAULT")
+
+ChicagoCrimeAssault %>%
+  filter(arrest == "FALSE") %>%
   arrange(desc(count)) %>%
   head(5)
 
-ChicagoCrime %>%
-  select(district, arrest, primarytype) %>%
-  group_by(district, primarytype, arrest) %>%
-  summarise(count = n()) %>%
-  filter(primarytype == "ASSAULT", arrest == "FALSE") %>%
+ChicagoCrimeAssault %>%
+  filter(arrest == "TRUE") %>%
   arrange(desc(count)) %>%
   head(5)
+
+ChicagoCrimeAssault %>%
+  ggplot(aes(x = district, y = count)) +
+  geom_col(aes(fill = arrest), position = "dodge") +
+  xlim(1,25) +
+  png("graphic1.png", width = 800, height = 300)
+  
 
 ```
 
+The five districts with the highest number of assaults resulting in arrest are, from highest to lowest, districts 7, 8, 4, 6, and 3. The five districts with the highest number of assaults without arrest are, from highest to lowest, districts 7, 4, 6, 8, and 11.
+
+As we can see, 4 of the districts (4, 6, 7, and 8) in the two results remain the same, with some of them switching order. This could indicate that districts 4, 6, 7, and 8 are some of the most dangerous districts in Chicago, though this data does not prove that claim. 
 
 
 

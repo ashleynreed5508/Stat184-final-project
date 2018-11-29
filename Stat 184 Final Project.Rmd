@@ -46,6 +46,7 @@ library(lubridate)
 library(DataComputing)
 library(readr)
 library(lubridate)
+library(knitr)
 
 ```
 
@@ -82,7 +83,6 @@ ChicagoCrime <-
 ChicagoCrime %>% 
   mutate(block = gsub("X|XX","", block))
 
-
 ChicagoCrime 
 
 ```
@@ -113,9 +113,8 @@ ChicagoCrimeAssault %>%
 ChicagoCrimeAssault %>%
   ggplot(aes(x = district, y = count)) +
   geom_col(aes(fill = arrest), position = "dodge") +
-  xlim(1,25) +
-  png("graphic1.png", width = 800, height = 300)
-  
+  scale_x_continuous(breaks = c(1:25), limits = c(1,25)) + 
+  jpeg("chicagocrimeassault.jpeg", width = 800, height = 300) 
 
 ```
 

@@ -52,12 +52,12 @@ library(knitr)
 
 ### Reading in the Data
 
-I downloaded the data set from the Chicago Data Portal as a CSV file and used read_csv() from the readr package to create a data set named ChicagoCrime that I can work with in R
-
 ```{r, results = "hide"}
 
 ChicagoCrimeOriginal <-
 read_csv("Crimes_-_2001_to_present.csv")
+
+# Reading in data from the Chicago Data Portal to create a new data frame in R --------------------------------------------
 
 ``` 
 
@@ -97,58 +97,32 @@ ChicagoCrimeOriginal %>%
          lat = Latitude,
          long = Longitude,
          location = Location) %>%
-  select(date, block, iucr, primary_type, description, location_description, arrest, domestic, beat, district, ward, community_area, fbi_code, year, lat, long, location) %>%
   mutate(date = lubridate::mdy_hms(date),
          arrest = as.logical(arrest),
          domestic = as.logical(domestic),
-         beat = as.numeric(beat),
-         district = as.numeric(district)) 
+         beat = as.integer(beat),
+         district = as.integer(district),
+         block = gsub("X|XX","", block))
 
-ChicagoCrime <-
-ChicagoCrime %>% 
-  mutate(block = gsub("X|XX","", block))
+# Cleaning Chicago Crime data to fit standard conventions and simplify further work  -------------------------------------
 
 ChicagoCrime 
 
 ```
 
-Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about certain districts in Chicago and their relative danger in terms of crimes committed. First, I will manipulate the data to figure out which 5 districts have had the largest number of assaults with and without arrests.
-
-In order to do this, I will select the variables `district`, `arrest`, and `primarytype`, and group by all three of them to make each combination of the variables a unique case. Then, I will summarise the data to find the number of incidences for each case.  To isolate assaults with arrest, I will filter out all `primarytype` results that are not assault, and filter out all `arrest` results that are not TRUE. I will do the opposite for arrest to find the assaults without arrest. Then, I will arrange each new data frame by descending count to find the highest values and restrict them to the top 5 results.
+Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about crime rates (specifically in terms of arrests) over the years, so I will create a plot of years vs. number of crimes, and plot crimes resulting in arrest and crimes not resulting in arrest seperately.
 
 ```{r}
 
-ChicagoCrimeAssault <-
-ChicagoCrime %>%
-  select(district, arrest, primarytype) %>%
-  group_by(district, primarytype, arrest) %>%
-  summarise(count = n()) %>%
-  filter(primarytype == "ASSAULT")
+ChicagoCrimeYears <-
+  ChicagoCrime %>%
+  group_by(year, arrest) %>%
+  summarise(count = n()) 
 
-ChicagoCrimeAssault %>%
-  filter(arrest == "FALSE") %>%
-  arrange(desc(count)) %>%
-  head(5)
-
-ChicagoCrimeAssault %>%
-  filter(arrest == "TRUE") %>%
-  arrange(desc(count)) %>%
-  head(5)
-
-ChicagoCrimeAssault %>%
-  ggplot(aes(x = district, y = count)) +
-  geom_col(aes(fill = arrest), position = "dodge") +
-  scale_x_continuous(breaks = c(1:25), limits = c(1,25)) + 
-  jpeg("chicagocrimeassault.jpeg", width = 800, height = 300) 
+ChicagoCrimeYears %>%
+  ggplot(aes(x = year, y = count, color = arrest)) +
+  geom_point() +
+  geom_line() 
 
 ```
-
-The five districts with the highest number of assaults resulting in arrest are, from highest to lowest, districts 7, 8, 4, 6, and 3. The five districts with the highest number of assaults without arrest are, from highest to lowest, districts 7, 4, 6, 8, and 11.
-
-As we can see, 4 of the districts (4, 6, 7, and 8) in the two results remain the same, with some of them switching order. This could indicate that districts 4, 6, 7, and 8 are some of the most dangerous districts in Chicago, though this data does not prove that claim. 
-
-
-
-
-
 

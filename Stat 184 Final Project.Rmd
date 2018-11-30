@@ -75,9 +75,34 @@ In order to clean up the data to make it tidy and ready for analysis, I renamed 
 
 ChicagoCrime <-
 ChicagoCrimeOriginal %>%
-  rename(id = ID, casenumber = `Case Number`, date = Date, block = Block, iucr = IUCR, primarytype = `Primary Type`, description = Description, locationdescription = `Location Description`, arrest = Arrest, domestic = Domestic, beat = Beat, district = District, ward = Ward, communityarea = `Community Area`, fbicode = `FBI Code`, xcoordinate = `X Coordinate`, ycoordinate = `Y Coordinate`, year = Year, updated = `Updated On`, lat = Latitude, long = Longitude, location = Location) %>%
-  select(date, block, iucr, primarytype, description, locationdescription, arrest, domestic, beat, district, ward, communityarea, fbicode, year, lat, long, location) %>%
-  mutate(date = lubridate::mdy_hms(date), arrest = as.logical(arrest), domestic = as.logical(domestic), beat = as.numeric(beat), district = as.numeric(district)) 
+  rename(id = ID, 
+         case_number = `Case Number`, 
+         date = Date, 
+         block = Block, 
+         iucr = IUCR, 
+         primary_type = `Primary Type`,
+         description = Description,
+         location_description = `Location Description`,
+         arrest = Arrest,
+         domestic = Domestic,
+         beat = Beat,
+         district = District,
+         ward = Ward,
+         community_area = `Community Area`,
+         fbi_code = `FBI Code`,
+         x_coordinate = `X Coordinate`,
+         y_coordinate = `Y Coordinate`,
+         year = Year,
+         updated = `Updated On`,
+         lat = Latitude,
+         long = Longitude,
+         location = Location) %>%
+  select(date, block, iucr, primary_type, description, location_description, arrest, domestic, beat, district, ward, community_area, fbi_code, year, lat, long, location) %>%
+  mutate(date = lubridate::mdy_hms(date),
+         arrest = as.logical(arrest),
+         domestic = as.logical(domestic),
+         beat = as.numeric(beat),
+         district = as.numeric(district)) 
 
 ChicagoCrime <-
 ChicagoCrime %>% 

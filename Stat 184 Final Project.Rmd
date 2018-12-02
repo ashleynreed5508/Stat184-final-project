@@ -206,10 +206,7 @@ ChicagoCrimeMonth %>%
   group_by(primary_type, arrest, month) %>%
   summarise(count = n()) 
 
-```
-
-
-```{r}
+# Creating a new data table only containing the 4 most common types of crimes and showing the total counts of each type of crime in each month of the year with respect to arrest --------
   
 ChicagoMonthGlyphReady %>%
   ggplot(aes(x = month, y = count)) +
@@ -217,4 +214,12 @@ ChicagoMonthGlyphReady %>%
   scale_x_continuous(breaks = c(1:12)) +
   facet_wrap(primary_type ~ .)
 
+# Plotting total number of crimes for each primary type in terms of arrest against the month ---------
+
 ```
+
+This plot shows that the occurrence of certain crimes peaks during certain times of the year. Theft seems to become more frequent in the summer months and battery seems to be most frequent in the late spring and early summer months.  Criminal damage also becomes slightly more frequent in the summer months.  This could possibly be attributed to warmer weather or more free time in these months (depending on the age of the people committing these crimes).
+
+Narcotics crimes are the only ones that show no difference in frequency in different months/times of the year. This would make sense, because people addicted to narcotics are not more motivated to use them at certain times of the year.  
+
+Another interesting thing that can be seen from this plot is that the crimes committed resulting in arrest do not fluctuate in frequency the way that crimes not resulting in arrest do. For all of the 4 most common types of crimes, the number of occurrences for each month remains relatively consistent throughout the entiretly of the year.

@@ -51,12 +51,12 @@ library(knitr)
 
 ### Reading in the Data
 
-```{r echo = T, results = 'hide'}
+```{r}
 
 ChicagoCrimeOriginal <-
 read_csv("Crimes_-_2001_to_present.csv")
 
-# Reading in data from the Chicago Data Portal to create a new data frame in R --------------------------------------------
+# Reading in data from the Chicago Data Portal to create a new data frame in R -------------------
 
 ``` 
 
@@ -103,7 +103,7 @@ ChicagoCrimeOriginal %>%
          district = as.integer(district),
          block = gsub("X|XX","", block))
 
-# Cleaning Chicago Crime data to fit standard conventions and simplify further work  -------------------------------------
+# Cleaning Chicago Crime data to fit standard conventions and simplify further work  -----------------------
 
 ChicagoCrime 
 
@@ -120,7 +120,7 @@ ChicagoCrimeYears <-
   group_by(year, arrest) %>%
   summarise(count = n()) 
 
-# Calculating the number of reported crimes committed each year --------------------------------------
+# Calculating the number of reported crimes committed each year ---------------
 
 ChicagoCrimeYears %>%
   ggplot(aes(x = year, y = count, color = arrest)) +
@@ -143,30 +143,32 @@ Next, I would like to observe the difference in number of total crimes committed
 
 ```{r}
  
-ChicagoCrimeAssault <-
+ChicagoCrimeTotals <-
 ChicagoCrime %>%
   select(district, arrest) %>%
   group_by(district, arrest) %>%
   summarise(count = n()) 
 
-# Calculating the total number of crimes committed in each district resulting in arrest and not resulting in arrest -------------------------------
+# Calculating the total number of crimes committed in each district resulting in arrest and not resulting in arrest --------------
 
-ChicagoCrimeAssault %>%
+ChicagoCrimeTotals %>%
   filter(arrest == "TRUE") %>%
   arrange(desc(count)) %>%
   head(5)
 
-ChicagoCrimeAssault %>%
+ChicagoCrimeTotals %>%
   filter(arrest == "FALSE") %>%
   arrange(desc(count)) %>%
   head(5)
 
-# Manually finding the 5 districts with the highest number of crimes resulting in arrest and the 5 districts with the highest number of crimes not resulting in arrest -----------------------------
+# Manually finding the 5 districts with the highest number of crimes resulting in arrest and the 5 districts with the highest number of crimes not resulting in arrest -----------------
 
-ChicagoCrimeAssault %>%
+ChicagoCrimeTotals %>%
   ggplot(aes(x = district, y = count)) +
   geom_col(aes(fill = arrest), position = "dodge") +
-  scale_x_continuous(breaks = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25), limits = c(1,25)) 
+  scale_x_continuous(breaks = 
+                     c(1,3,5,7,9,11,13,15,17,19,21,23,25),
+                     limits = c(1,25))
 
 # Plotting the number of crimes (with respect to arrest) against the district they were committed in
 
@@ -176,7 +178,8 @@ This plot shows that there are certainly some districts in which many more crime
 
 -----------------------------------------------------------
 
-Lastly, I would like to find out 
+Lastly, I would like to find out if month/time of year has anything to do with the number of crimes committed for certain types of crimes. I will find the 4 most common crimes committed in Chicago and analyze the prevalence of their occurence in each month in terms of arrest. I expect to see that certain crimes occur more heavily at certain times of the year.
+
 ```{r}
 
 pattern <- "\\d{4}\\-(\\d{2})"
@@ -187,10 +190,14 @@ ChicagoCrime %>%
   tidyr::extract(date, into = "month", regex = pattern) %>%
   mutate(month = as.integer(month))
 
+# Extracting the month from the date that each crime was committed and putting it into a new variable called `month` ----------- 
+
 ChicagoCrime %>%
   group_by(primary_type) %>%
   summarise(count = n()) %>%
-  filter(rank(desc(count)) <= 4)
+  filter(rank(desc(count)) <= 4)  
+
+# Ranking the primary types of crimes by their prevalence in the data and printing out the top 4 for further analysis --------
 
 ChicagoMonthGlyphReady <-
 ChicagoCrimeMonth %>%

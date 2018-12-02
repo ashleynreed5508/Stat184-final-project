@@ -120,10 +120,14 @@ ChicagoCrimeYears <-
   group_by(year, arrest) %>%
   summarise(count = n()) 
 
+# Calculating the number of reported crimes committed each year --------------------------------------
+
 ChicagoCrimeYears %>%
   ggplot(aes(x = year, y = count, color = arrest)) +
   geom_point() +
   geom_line() 
+
+# Plotting the number of crimes committed each year in terms of arrest vs the year
 
 ```
 
@@ -135,8 +139,7 @@ Overall, this plot could be seen as relatively good news; from the trends shown 
 
 ------------------------------------------------------------
 
-Next, I would like to observe the difference in number of total crimes committed over the years in each Chicago District. 
-
+Next, I would like to observe the difference in number of total crimes committed over the years in each Chicago District in terms of arrest. I am anticipating that there will be certain districts in Chicago that are more dangerous than others (in terms of number of crimes committed).
 
 ```{r}
  
@@ -145,6 +148,8 @@ ChicagoCrime %>%
   select(district, arrest) %>%
   group_by(district, arrest) %>%
   summarise(count = n()) 
+
+# Calculating the total number of crimes committed in each district resulting in arrest and not resulting in arrest -------------------------------
 
 ChicagoCrimeAssault %>%
   filter(arrest == "TRUE") %>%
@@ -156,15 +161,22 @@ ChicagoCrimeAssault %>%
   arrange(desc(count)) %>%
   head(5)
 
+# Manually finding the 5 districts with the highest number of crimes resulting in arrest and the 5 districts with the highest number of crimes not resulting in arrest -----------------------------
+
 ChicagoCrimeAssault %>%
   ggplot(aes(x = district, y = count)) +
   geom_col(aes(fill = arrest), position = "dodge") +
   scale_x_continuous(breaks = c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25), limits = c(1,25)) 
 
+# Plotting the number of crimes (with respect to arrest) against the district they were committed in
+
 ```
 
-month of year, top 4 types, facet by arrest and types
+This plot shows that there are certainly some districts in which many more crimes are committed than others. While this plot gives a nice visualization of the districts with the most crime in terms of arrest, it is also helpful to manually calculate the districts with the most crime. In doing this, it can be seen that districts 11, 15, 7, 25, and 8 have the highest number of crimes resulting in arrest, and districts 8, 4, 6, 7, and 25 have the highest number of crimes not resulting in arrest. This can be seen on the plot as well. Interestingly, districts 7 and 25 appear on both top 5 lists, so it seems that these districts are relatively dangerous, as they have many crimes being committed both resulting and not resulting in arrest.
 
+-----------------------------------------------------------
+
+Lastly, I would like to find out 
 ```{r}
 
 pattern <- "\\d{4}\\-(\\d{2})"

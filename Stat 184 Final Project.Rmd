@@ -51,7 +51,7 @@ library(knitr)
 
 ### Reading in the Data
 
-```{r, results = "hide"}
+```{r echo = T, results = 'hide'}
 
 ChicagoCrimeOriginal <-
 read_csv("Crimes_-_2001_to_present.csv")

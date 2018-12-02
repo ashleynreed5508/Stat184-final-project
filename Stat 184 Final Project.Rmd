@@ -32,7 +32,6 @@ The variables include:
 * Longitude 
 * Location
 
-
 ### Front Matter
 
 ```{r}
@@ -69,7 +68,7 @@ ChicagoCrimeOriginal
 
 ### Cleaning the Data
 
-In order to clean up the data to make it tidy and ready for analysis, I renamed the variables to fit standard data conventions in R programming, selected the variables that will be meaningful for data analysis, changed variable formats to fit what they contain (ex. dates, logical values, etc.), and removed the X or XX included in addresses under the block variable.
+In order to clean up the data to make it tidy and ready for analysis, I renamed the variables to fit standard data conventions in R programming, changed variable formats to fit what they contain (ex. dates, logical values, etc.), and removed the X or XX included in addresses under the block variable.
 
 ```{r}
 
@@ -110,6 +109,8 @@ ChicagoCrime
 
 ```
 
+### Analysis
+
 Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about crime rates (specifically in terms of arrests) over the years, so I will create a plot of years vs. number of crimes, and plot crimes resulting in arrest and crimes not resulting in arrest seperately.
 
 ```{r}
@@ -126,14 +127,24 @@ ChicagoCrimeYears %>%
 
 ```
 
+The resulting plot comes out with some very interesting results.  While I had expected that crime rates would show an increase as the years progressed, this shows the exact opposite. The number of crimes committed each year in Chicago is at a high from around 2001-2005, and then proceeds to decrease relatively consistently, except for a few isolated peaks, until it reaches an ultimate minimum value in 2018.  
+
+In addition, it seems that many more crimes take place in Chicago that lead to no arrest that crimes resulting in an arrest. I had assumed the opposite would be true when creating this plot. In certain years, there were almost triple the number of crimes with an arrest that did not result in arrest.  
+
+Overall, this plot could be seen as relatively good news; from the trends shown here, we could reasonable hypothesize that crimes will continue to decrease in Chicago in the coming years.
+
+------------------------------------------------------------
+
+Next, I would like to observe the difference in number of total crimes committed over the years in each Chicago District. 
+
+
 ```{r}
  
 ChicagoCrimeAssault <-
 ChicagoCrime %>%
-  select(district, arrest, primary_type) %>%
-  group_by(district, primary_type, arrest) %>%
-  summarise(count = n()) %>%
-  filter(primary_type == "ASSAULT") 
+  select(district, arrest) %>%
+  group_by(district, arrest) %>%
+  summarise(count = n()) 
 
 ChicagoCrimeAssault %>%
   filter(arrest == "TRUE") %>%
@@ -152,6 +163,39 @@ ChicagoCrimeAssault %>%
 
 ```
 
-The five districts with the highest number of assaults resulting in arrest are, from highest to lowest, districts 7, 8, 4, 6, and 3. The five districts with the highest number of assaults without arrest are, from highest to lowest, districts 7, 4, 6, 8, and 11.
- 
-As we can see, 4 of the districts (4, 6, 7, and 8) in the two results remain the same, with some of them switching order. This could indicate that districts 4, 6, 7, and 8 are some of the most dangerous districts in Chicago, though this data does not prove that claim. 
+month of year, top 4 types, facet by arrest and types
+
+```{r}
+
+pattern <- "\\d{4}\\-(\\d{2})"
+
+ChicagoCrimeMonth <-
+ChicagoCrime %>%
+  filter(grepl(pattern, date)) %>%
+  tidyr::extract(date, into = "month", regex = pattern) %>%
+  mutate(month = as.integer(month))
+
+ChicagoCrime %>%
+  group_by(primary_type) %>%
+  summarise(count = n()) %>%
+  filter(rank(desc(count)) <= 4)
+
+ChicagoMonthGlyphReady <-
+ChicagoCrimeMonth %>%
+  select(primary_type, arrest, month) %>%
+  filter(primary_type %in% c("THEFT", "BATTERY", "NARCOTICS", "CRIMINAL DAMAGE")) %>%
+  group_by(primary_type, arrest, month) %>%
+  summarise(count = n()) 
+
+```
+
+
+```{r}
+  
+ChicagoMonthGlyphReady %>%
+  ggplot(aes(x = month, y = count)) +
+  geom_col(aes(fill = arrest), position = "dodge") +
+  scale_x_continuous(breaks = c(1:12)) +
+  facet_wrap(primary_type ~ .)
+
+```

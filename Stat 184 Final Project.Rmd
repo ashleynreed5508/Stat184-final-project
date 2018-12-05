@@ -222,4 +222,4 @@ This plot shows that the occurrence of certain crimes peaks during certain times
 
 Narcotics crimes are the only ones that show no difference in frequency in different months/times of the year. This would make sense, because people addicted to narcotics are not more motivated to use them at certain times of the year.  
 
-Another interesting thing that can be seen from this plot is that the crimes committed resulting in arrest do not fluctuate in frequency the way that crimes not resulting in arrest do. For all of the 4 most common types of crimes, the number of occurrences for each month remains relatively consistent throughout the entiretly of the year.
+Another interesting thing that can be seen from this plot is that the crimes committed resulting in arrest do not fluctuate in frequency the way that crimes not resulting in arrest do. For all of the 4 most common types of crimes, the number of occurrences for each month remains relatively consistent throughout the entirety of the year.

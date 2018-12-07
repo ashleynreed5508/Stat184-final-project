@@ -50,6 +50,8 @@ ChicagoCrimeOriginal %>%
 ChicagoCrimeOriginal %>%
   arrange(Date)
 
+# Exploring the ChicagoCrimeOriginal data frame
+
 ```
 
 This data set contained 6.75 million cases providing information on 22 different variables. Each case represents a reported crime. 
@@ -247,6 +249,8 @@ The USHolidays data is a data frame taken from the Kaggle website that contains 
 USHolidays <-
   read_csv("usholidays.csv")
 
+# Reading in the CSV file containing the data on US holidays that will aid in further analysis
+
 ```
 
 ### Inspecting Data for Join
@@ -264,13 +268,14 @@ names(USHolidays)
 nrow(USHolidays)
 ncol(USHolidays)
 
+# Exploring the USHolidays data frame before beginning analysis
+
 ```
 
-The USHolidays data frame contains 4-- cases and 3 variables.  One of these variables 
-
+The USHolidays data frame contains 485 cases and 3 variables.  One of these variables is called "X1", and simply numbers the cases, so it can be removed once we begin to prepare the data for a join. 
 ### Joining
 
-I will join the ChicagoCrime data with the USHolidays data to analyze which holidays have the highest numbers of crimes. Since the ChicagoCrime data only contains dates from 2001 to 2018, I will use the inner_join() function so that any cases from either table that do not have a match in the other will be dropped.
+I will join the ChicagoCrime data with the USHolidays data to analyze which of certain holidays have the highest numbers of crimes. Since the ChicagoCrime data only contains dates from 2001 to 2018, I will use the inner_join() function so that any cases from either table that do not have a match in the other will be dropped.
 
 ```{r}
 
@@ -279,7 +284,11 @@ USHolidaysJoin <-
   select(Date, Holiday) %>%
   rename(join_date = Date, holiday = Holiday) 
 
+# Preparing the USHolidays data frame for joining by selecting the relevant variables and renaming the variables to fit conventions and be more descriptive--------
+
 pattern2 <- "(\\d{4}\\-\\d{2}\\-\\d{2})"
+
+# Setting a regex pattern in order to extract the year/month/day information from the date variable in the ChicagoCrime data -----
 
 ChicagoCrimeJoin <-
   ChicagoCrime %>%
@@ -287,9 +296,13 @@ ChicagoCrimeJoin <-
   tidyr::extract(date, into = "join_date", regex = pattern2) %>%
   mutate(join_date = as_date(join_date))
 
+# Preparing the ChicagoCrime data frame for joining by creating a new variable called join_date with only year/month/day information that can be joined with the join_date variable in USHolidaysJoin 
+
 JoinData <-
 ChicagoCrimeJoin %>%
   inner_join(USHolidaysJoin)
+
+# Joining the ChicagoCrimeJoin and USHolidayJoin data frames to create a data frame containing information only from US holidays
 
 ```
 
@@ -304,10 +317,14 @@ JoinData %>%
   filter(holiday  %in% c("Christmas Day", "Thanksgiving Day", "New Year's Day", "Memorial Day", "Independence Day", "Labor Day", "Veteran's Day", "Columbus Day") ) %>%
   summarise(count = n()) 
 
+# Preparing the joined data to be plotted by selecting the relevant variables to analysis, counting the # of crimes that took place on each holiday, and selecting the holidays I am most interested in looking at
+
 GlyphReadyJoinData %>%
   ggplot(aes(x = holiday, y = count)) +
   geom_col(fill = "pink", color = "red") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+# Plotting relevant holidays by # of crimes committed
 
 ```
 

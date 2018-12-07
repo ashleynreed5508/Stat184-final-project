@@ -306,6 +306,7 @@ ChicagoCrimeJoin %>%
 
 ```
 
+Now that I have joined the data frames, I am interested in plotting some of the most well-recognized US holidays by the number of crimes committed on each of them in Chicago. I suspect that certain holidays will exhibit much higher numbers of crimes than others.
 
 ```{r}
 
@@ -328,5 +329,5 @@ GlyphReadyJoinData %>%
 
 ```
 
-
+According to this plot, we can see that there are definitely large differences in the number of crimes committed over the years on each of these holidays. While Christmas Day, Thanksgiving Day, and New Year's Day exhibit relatively low numbers of crimes in comparison to the other holidays, Columbus Day, Independence Day, Labor Day, and Memorial Day exhibit much higher numbers of crimes.  This could perhaps be attributed to the fact that Columbus Day, Labor Day, Independence Day, and Memorial Day are viewed as more "regular" days than Thanksgiving, Christmas, and New Year's Day, which are very widely recognized and celebrated as days of rest, family, kindness, and peace.
 

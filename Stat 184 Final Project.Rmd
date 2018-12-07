@@ -5,7 +5,54 @@ subtitle: "Chicago Crime: 2001 to Present"
 output: html_notebook
 ---
 
-In this project, I will be analyzing data collected by the Chicago Police Department that was posted for public access on the Chicago Data Portal. This data set contained 6.75 million cases providing information on 22 different variables. Each case represents a reported crime. 
+### Front Matter
+
+```{r}
+rm(list = ls())
+
+library(rvest)
+library(tidyverse)
+library(tidyr)
+library(mosaic)
+library(lubridate)
+library(DataComputing)
+library(readr)
+library(lubridate)
+library(knitr)
+
+```
+
+In this project, I will be analyzing data collected by the Chicago Police Department that was posted for public access on the Chicago Data Portal. This data set includes information on crimes committed in the city of Chicago and specific details about what they were, where they took place, and when they were committed.
+
+### Reading in the Data
+
+```{r}
+
+ChicagoCrimeOriginal <-
+read_csv("Crimes_-_2001_to_present.csv")
+
+# Reading in data from the Chicago Data Portal to create a new data frame in R -------------------
+
+``` 
+
+### Inspecting the Data
+
+```{r}
+
+nrow(ChicagoCrimeOriginal)
+ncol(ChicagoCrimeOriginal)
+
+names(ChicagoCrimeOriginal)
+
+ChicagoCrimeOriginal %>%
+  head(10)
+
+ChicagoCrimeOriginal %>%
+  arrange(Date)
+
+```
+
+This data set contained 6.75 million cases providing information on 22 different variables. Each case represents a reported crime. 
 
 The variables include:
 
@@ -31,40 +78,6 @@ The variables include:
 * Latitude
 * Longitude 
 * Location
-
-### Front Matter
-
-```{r}
-rm(list = ls())
-
-library(rvest)
-library(tidyverse)
-library(tidyr)
-library(mosaic)
-library(lubridate)
-library(DataComputing)
-library(readr)
-library(lubridate)
-library(knitr)
-
-```
-
-### Reading in the Data
-
-```{r}
-
-ChicagoCrimeOriginal <-
-read_csv("Crimes_-_2001_to_present.csv")
-
-# Reading in data from the Chicago Data Portal to create a new data frame in R -------------------
-
-``` 
-
-```{r}
-
-ChicagoCrimeOriginal
-
-```
 
 ### Cleaning the Data
 
@@ -105,37 +118,36 @@ ChicagoCrimeOriginal %>%
 
 # Cleaning Chicago Crime data to fit standard conventions and simplify further work  -----------------------
 
-ChicagoCrime 
+ChicagoCrime %>%
+  head(10)
 
 ```
 
 ### Analysis
 
-Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about crime rates (specifically in terms of arrests) over the years, so I will create a plot of years vs. number of crimes, and plot crimes resulting in arrest and crimes not resulting in arrest seperately.
+Now that I have cleaned up the data, I will use data wrangling to analyze the data and come to some meaningful conclusions. I'm curious to find out more about crime rates over the years, so I will create a plot of years vs. number of crimes to see if there are any interesting patterns.
 
 ```{r}
 
 ChicagoCrimeYears <-
   ChicagoCrime %>%
-  group_by(year, arrest) %>%
+  group_by(year) %>%
   summarise(count = n()) 
 
 # Calculating the number of reported crimes committed each year ---------------
 
 ChicagoCrimeYears %>%
-  ggplot(aes(x = year, y = count, color = arrest)) +
+  ggplot(aes(x = year, y = count)) +
   geom_point() +
-  geom_line() 
+  geom_smooth(color = "red")
 
 # Plotting the number of crimes committed each year in terms of arrest vs the year
 
 ```
 
-The resulting plot comes out with some very interesting results.  While I had expected that crime rates would show an increase as the years progressed, this shows the exact opposite. The number of crimes committed each year in Chicago is at a high from around 2001-2005, and then proceeds to decrease relatively consistently, except for a few isolated peaks, until it reaches an ultimate minimum value in 2018.  
+The resulting plot comes out with some very interesting results.  While I had expected that crime rates would show an increase as the years progressed, this shows the exact opposite. The number of crimes committed each year in Chicago has been steadily decreasing since 2001. The overall pattern of crimes (shown by the smoother) shows that crimes decreased slowly from 2001 to 2005, then much more quickly from 2005 to about 2015, and it seems that the rate of decrease is beginning to slow down again (from about 2015-2018). This can be observed through the slope of the smoother curve overlaying the exact data points for each year included in the data set.
 
-In addition, it seems that many more crimes take place in Chicago that lead to no arrest that crimes resulting in an arrest. I had assumed the opposite would be true when creating this plot. In certain years, there were almost triple the number of crimes with an arrest that did not result in arrest.  
-
-Overall, this plot could be seen as relatively good news; from the trends shown here, we could reasonable hypothesize that crimes will continue to decrease in Chicago in the coming years.
+Overall, this plot could be seen as relatively good news; from the trends shown here, we could reasonably hypothesize that crimes will continue to decrease in Chicago in the coming years.
 
 ------------------------------------------------------------
 
@@ -178,7 +190,7 @@ This plot shows that there are certainly some districts in which many more crime
 
 -----------------------------------------------------------
 
-Lastly, I would like to find out if month/time of year has anything to do with the number of crimes committed for certain types of crimes. I will find the 4 most common crimes committed in Chicago and analyze the prevalence of their occurence in each month in terms of arrest. I expect to see that certain crimes occur more heavily at certain times of the year.
+I would also like to find out if month/time of year has anything to do with the number of crimes committed for certain types of crimes. I will find the 4 most common crimes committed in Chicago and analyze their prevalence in each month in terms of arrest. I expect to see that certain crimes occur more heavily at certain times of the year.
 
 ```{r}
 
@@ -223,3 +235,81 @@ This plot shows that the occurrence of certain crimes peaks during certain times
 Narcotics crimes are the only ones that show no difference in frequency in different months/times of the year. This would make sense, because people addicted to narcotics are not more motivated to use them at certain times of the year.  
 
 Another interesting thing that can be seen from this plot is that the crimes committed resulting in arrest do not fluctuate in frequency the way that crimes not resulting in arrest do. For all of the 4 most common types of crimes, the number of occurrences for each month remains relatively consistent throughout the entirety of the year.
+
+-----------------------------------------------------------
+
+### Reading in Data Frame for Join
+
+The USHolidays data is a data frame taken from the Kaggle website that contains information on the specific dates of government-recognized US holidays from the years of 1966 to 2020. Each case is a holiday in a year.
+
+```{r}
+
+USHolidays <-
+  read_csv("usholidays.csv")
+
+```
+
+### Inspecting Data for Join
+
+```{r}
+
+USHolidays %>%
+  head(10)
+
+USHolidays %>%
+  tail(10)
+
+names(USHolidays)
+ 
+nrow(USHolidays)
+ncol(USHolidays)
+
+```
+
+The USHolidays data frame contains 4-- cases and 3 variables.  One of these variables 
+
+### Joining
+
+I will join the ChicagoCrime data with the USHolidays data to analyze which holidays have the highest numbers of crimes. Since the ChicagoCrime data only contains dates from 2001 to 2018, I will use the inner_join() function so that any cases from either table that do not have a match in the other will be dropped.
+
+```{r}
+
+USHolidaysJoin <-
+  USHolidays %>%
+  select(Date, Holiday) %>%
+  rename(join_date = Date, holiday = Holiday) 
+
+pattern2 <- "(\\d{4}\\-\\d{2}\\-\\d{2})"
+
+ChicagoCrimeJoin <-
+  ChicagoCrime %>%
+  filter(grepl(pattern2, date)) %>%
+  tidyr::extract(date, into = "join_date", regex = pattern2) %>%
+  mutate(join_date = as_date(join_date))
+
+JoinData <-
+ChicagoCrimeJoin %>%
+  inner_join(USHolidaysJoin)
+
+```
+
+
+```{r}
+
+GlyphReadyJoinData <-
+JoinData %>%
+  select(holiday, join_date) %>%
+  rename(date = join_date) %>%
+  group_by(holiday) %>%
+  filter(holiday  %in% c("Christmas Day", "Thanksgiving Day", "New Year's Day", "Memorial Day", "Independence Day", "Labor Day", "Veteran's Day", "Columbus Day") ) %>%
+  summarise(count = n()) 
+
+GlyphReadyJoinData %>%
+  ggplot(aes(x = holiday, y = count)) +
+  geom_col(fill = "pink", color = "red") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+
+
+
